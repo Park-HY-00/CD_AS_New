@@ -24,12 +24,21 @@ class AuthRepository {
     return null;
   }
 
-  Future<AppUser> emailSignUp(
-      {required String email,
-      required String password,
-      required String nickname}) async {
+  Future<AppUser> emailSignUp({
+    required String email,
+    required String password,
+    required String name,
+    required String gender,
+    required String height,
+    required String weight,
+  }) async {
     return AppUser.fromUser(await _authDataSource.emailSignUp(
-        email: email, password: password, nickname: nickname));
+        email: email,
+        password: password,
+        name: name,
+        gender: gender,
+        height: height,
+        weight: weight));
   }
 
   Future<AppUser> emailSignIn(
@@ -51,7 +60,7 @@ class AuthRepository {
 
   ///유저 정보 업데이트
   Future<void> updateUserInfo(
-      {required String email, required String nickname}) async {
-    await _authDataSource.updateUserInfo(email: email, nickname: nickname);
+      {required String email, required String name}) async {
+    await _authDataSource.updateUserInfo(email: email, nickname: name);
   }
 }

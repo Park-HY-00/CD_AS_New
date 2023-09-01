@@ -97,14 +97,18 @@ class AuthDataSource extends remoteDataSource {
   }
 
   ///이메일 회원가입
-  Future<User> emailSignUp(
-      {required String email,
-      required String password,
-      required String nickname}) async {
+  Future<User> emailSignUp({
+    required String email,
+    required String password,
+    required String name,
+    required String gender,
+    required String height,
+    required String weight,
+  }) async {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      await credential.user?.updateDisplayName(nickname);
+      await credential.user?.updateDisplayName(name);
       return credential.user!;
     } on FirebaseAuthException catch (e) {
       print(e);
@@ -146,10 +150,9 @@ class AuthDataSource extends remoteDataSource {
 ///인증정보를 제외한 유저 정보에 관련된 외부데이터소스
 class UserInfoDataSource {
   ///응원팀 생성 및 업데이트
-  Future<bool> updateMyTeam({required String uid, required String team}) async {
+  Future<bool> updateMyTeam({required String uid}) async {
     try {
       final db = FirebaseFirestore.instance;
-      await db.collection("users").doc(uid).set({"team": team});
     } catch (e) {
       print("응원팀 업데이트 오류");
       return false;

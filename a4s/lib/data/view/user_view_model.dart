@@ -28,18 +28,26 @@ class UserViewModel extends ChangeNotifier {
   //   });
   // }
 
-  Future<void> emailSignUp(
-      {required String email,
-      required String password,
-      required String nickname,
-      required String team}) {
+  Future<void> emailSignUp({
+    required String email,
+    required String password,
+    required String name,
+    required String gender,
+    required String height,
+    required String weight,
+  }) {
     return authRepositoryProvider
-        .emailSignUp(email: email, password: password, nickname: nickname)
+        .emailSignUp(
+            email: email,
+            password: password,
+            name: name,
+            gender: gender,
+            height: height,
+            weight: weight)
         .then((result) {
       _user = result;
-      _user!.nickname = nickname;
-      userInfoRepositoryProvider.updateMyTeam(uid: _user!.uid!, team: team);
-      _user!.team = team;
+      _user!.name = name;
+      userInfoRepositoryProvider.updateMyTeam(uid: _user!.uid!);
       notifyListeners();
     });
   }
@@ -52,17 +60,14 @@ class UserViewModel extends ChangeNotifier {
     )
         .then((result) async {
       _user = result;
-      _user!.team =
-          await userInfoRepositoryProvider.getMyTeam(uid: _user!.uid!);
       notifyListeners();
     });
   }
 
   Future<void> updateTeam({required String team}) async {
     return await userInfoRepositoryProvider
-        .updateMyTeam(uid: _user!.uid!, team: team)
+        .updateMyTeam(uid: _user!.uid!)
         .then((result) {
-      _user!.team = team;
       notifyListeners();
     });
   }
@@ -72,7 +77,6 @@ class UserViewModel extends ChangeNotifier {
     if (tempUser != null) {
       _user = tempUser;
       userInfoRepositoryProvider.getMyTeam(uid: _user!.uid!).then((value) {
-        _user!.team = value;
         notifyListeners();
       });
       return true;
@@ -102,14 +106,11 @@ class UserViewModel extends ChangeNotifier {
   Future<void> updateUserInfo(
       {required String uid,
       required String email,
-      required String nickname,
-      required String team}) async {
-    await authRepositoryProvider.updateUserInfo(
-        email: email, nickname: nickname);
+      required String name}) async {
+    await authRepositoryProvider.updateUserInfo(email: email, name: name);
     _user!.email = email;
-    _user!.nickname = nickname;
-    await userInfoRepositoryProvider.updateMyTeam(uid: uid, team: team);
-    _user!.team = team;
+    _user!.name = name;
+    await userInfoRepositoryProvider.updateMyTeam(uid: uid);
     notifyListeners();
   }
 }

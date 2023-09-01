@@ -152,21 +152,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       onPressed: () async {
                         try {
                           //await user.kakaoSignIn();
-                          print(user.user!.team);
-                          if (user.user!.team == null) {
-                            print("이거 왜 안되지");
-                            // ignore: use_build_context_synchronously
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => KaKaoSignUpPage()));
-                          } else {
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainPage()));
-                          }
+                          // 카톡 로그인 부분 지움
+                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MainPage()));
                         } catch (e) {
                           print(e);
                           print("로그인 실패");

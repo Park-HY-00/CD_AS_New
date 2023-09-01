@@ -12,7 +12,7 @@ class UserInfoRepository {
     return await _userInfoDataSource.getMyTeam(uid: uid);
   }
 
-  Future<bool> updateMyTeam({required String uid, required String team}) async {
-    return await _userInfoDataSource.updateMyTeam(uid: uid, team: team);
+  Future<bool> updateMyTeam({required String uid}) async {
+    return await _userInfoDataSource.updateMyTeam(uid: uid);
   }
 }

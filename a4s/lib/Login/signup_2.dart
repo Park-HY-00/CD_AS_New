@@ -1,44 +1,50 @@
-import 'package:a4s/Login/signup_2.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a4s/MainPage/main_page.dart';
 import 'package:a4s/data/view/user_view_model.dart';
 import 'package:get/get.dart';
-import 'signup_2.dart';
 
 /// 회원가입 화면
-class SignUpPage extends ConsumerStatefulWidget {
+class SignUpPage2 extends ConsumerStatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends ConsumerState<SignUpPage> {
+class _SignUpPageState extends ConsumerState<SignUpPage2> {
   TextStyle style = TextStyle(fontFamily: 'NanumSquare', fontSize: 18.0);
   late TextEditingController _name;
-  late TextEditingController _password;
-  late TextEditingController _password2;
-  late TextEditingController _email;
+  late TextEditingController _gender;
+  late TextEditingController _weight;
+  late TextEditingController _height;
   FocusNode searchFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
+  late SingleValueDropDownController _cnt;
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
+
+  List<DropDownValueModel> dropDownValueList = [
+    DropDownValueModel(name: "여자", value: "여자"),
+    DropDownValueModel(name: "남자", value: "남자")
+  ];
 
   @override
   void initState() {
     super.initState();
-    _name = TextEditingController(text: "");
-    _password = TextEditingController(text: "");
-    _password2 = TextEditingController(text: "");
-    _email = TextEditingController(text: "");
+    _name = TextEditingController(text: '${Get.arguments['name']}');
+    _gender = TextEditingController(text: "");
+    _weight = TextEditingController(text: "");
+    _height = TextEditingController(text: "");
+    _cnt = SingleValueDropDownController();
   }
 
   @override
   void dispose() {
     _name.dispose();
-    _email.dispose();
-    _password.dispose();
-    _password2.dispose();
+    _gender.dispose();
+    _weight.dispose();
+    _height.dispose();
+    _cnt.dispose();
     super.dispose();
   }
 
@@ -60,7 +66,30 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
-              SizedBox(height: 50),
+              Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  child: RichText(
+                      text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                        text: '정확한 ',
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xff6694ff),
+                            fontWeight: FontWeight.bold)),
+                    TextSpan(
+                        text: '수면 분석',
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xff6694ff),
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.bold)),
+                    TextSpan(
+                        text: '을 위해 필요한 자료들이에요.',
+                        style:
+                            TextStyle(fontSize: 15, color: Color(0xff616161)))
+                  ]))),
+              SizedBox(height: 30),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
@@ -83,14 +112,37 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+                child: DropDownTextField(
+                    validator: (value) =>
+                        (_cnt.dropDownValue == null) ? "성별을 선택해 주세요" : null,
+                    clearOption: false,
+                    textFieldFocusNode: textFieldFocusNode,
+                    searchFocusNode: searchFocusNode,
+                    dropDownItemCount: 2,
+                    searchShowCursor: false,
+                    searchKeyboardType: TextInputType.number,
+                    textFieldDecoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.favorite),
+                        labelText: "성별",
+                        filled: true,
+                        fillColor: const Color(0xffF6F6F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        )),
+                    dropDownList: dropDownValueList,
+                    controller: _cnt),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
                 child: TextFormField(
-                  controller: _email,
-                  validator: (value) =>
-                      (value!.isEmpty) ? "이메일을 입력 해 주세요" : null,
+                  controller: _height,
+                  validator: (value) => (value!.isEmpty) ? "키를 입력 해 주세요" : null,
                   style: style,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email),
-                    labelText: "이메일",
+                    prefixIcon: Icon(Icons.height),
+                    labelText: "키",
                     filled: true,
                     fillColor: Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -104,35 +156,13 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
                 child: TextFormField(
-                  obscureText: true,
-                  controller: _password,
+                  controller: _weight,
                   validator: (value) =>
-                      (value!.isEmpty) ? "패스워드를 입력 해 주세요" : null,
+                      (value!.isEmpty) ? "몸무게를 입력 해 주세요" : null,
                   style: style,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: "비밀번호",
-                    filled: true,
-                    fillColor: Color(0xffF6F6F6),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
-                child: TextFormField(
-                  obscureText: true,
-                  controller: _password2,
-                  validator: (value) =>
-                      (value != _password.text) ? "패스워드가 다릅니다" : null,
-                  style: style,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock),
-                    labelText: "비밀번호 확인",
+                    prefixIcon: Icon(Icons.line_weight),
+                    labelText: "몸무게",
                     filled: true,
                     fillColor: Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -152,11 +182,19 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       try {
-                        Get.to(SignUpPage2(), arguments: {
-                          'email': _email.value.text,
-                          'password': _password.value.text,
-                          'name': _name.value.text
-                        });
+                        await user.emailSignUp(
+                          email: "${Get.arguments['email']}",
+                          password: "${Get.arguments['password']}",
+                          name: "${Get.arguments['name']}",
+                          gender: _cnt.dropDownValue!.value,
+                          height: _height.value.text,
+                          weight: _weight.value.text,
+                          //disease: _disease.dropdownvalue.value
+                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => MainPage()),
+                            (route) => false);
                       } catch (e) {
                         print("$e 이메일 회원가입 실패");
                       }

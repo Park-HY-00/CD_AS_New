@@ -1,28 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
-  AppUser({this.uid, this.nickname, this.imageUrl, this.email, this.team});
+  AppUser(
+      {this.uid, this.name, this.email, this.gender, this.height, this.weight});
 
   factory AppUser.fromJson(Map<String, String> json) {
     return AppUser(
         uid: json['uid'],
-        nickname: json['nickname'],
-        imageUrl: json['imageUrl'],
+        name: json['name'],
         email: json['email'],
-        team: json['team']);
+        gender: json['gender'],
+        height: json['height'],
+        weight: json['weight']);
   }
 
   factory AppUser.fromUser(User user) {
-    return AppUser(
-        uid: user.uid,
-        nickname: user.displayName,
-        imageUrl: user.photoURL,
-        email: user.email);
+    return AppUser(uid: user.uid, name: user.displayName, email: user.email);
   }
 
   String? uid;
-  String? nickname;
-  String? imageUrl;
+  String? name;
   String? email;
-  String? team;
+  String? gender;
+  String? height;
+  String? weight;
 }
