@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:a4s/MainPage/home_page.dart';
+import 'package:a4s/alarm/alarm.dart';
 import 'package:a4s/data/repository/auth_repository.dart';
 
 class MainPage extends StatefulWidget {
@@ -20,19 +20,20 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
 
   int _selectedIdx = 1;
   final List _pages = [
-    const HomePage(),
+    const AlarmPage(),
   ];
 
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this, initialIndex: 2);
+    controller = TabController(length: 3, vsync: this, initialIndex: 1);
     _navigatorKeyList =
         List.generate(_pages.length, (index) => GlobalKey<NavigatorState>());
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         return !(await _navigatorKeyList[_selectedIdx]
@@ -40,19 +41,20 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
             .maybePop());
       },
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-          leadingWidth: 0,
-          titleSpacing: 0,
-          title: Image.asset(
-            "/logo.png",
-            width: 120,
-            height: double.maxFinite,
-          ),
-          shape: const Border(
-            bottom: BorderSide(
-              color: Colors.grey,
-              width: 1,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: AppBar(
+            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+            elevation: 0.0,
+            leadingWidth: 0,
+            titleSpacing: 0,
+            title: Container(
+              height: 80,
+              child: Image.asset(
+                "/logo.png",
+                width: 150,
+                height: double.maxFinite,
+              ),
             ),
           ),
         ),
@@ -71,11 +73,14 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
         bottomNavigationBar: TabBar(
           controller: controller,
           indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
+              borderRadius: BorderRadius.circular(40),
               color: Color(0xff6694ff)),
+          indicatorSize: TabBarIndicatorSize.tab,
           unselectedLabelColor: Colors.grey,
-          labelStyle: const TextStyle(fontSize: 10),
-          labelPadding: EdgeInsets.zero,
+          labelColor: Colors.white,
+          labelStyle:
+              const TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
+          labelPadding: EdgeInsets.symmetric(vertical: 5),
           onTap: (index) {
             setState(() {
               _selectedIdx = index;
@@ -83,36 +88,33 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
           },
           tabs: [
             Tab(
-              text: '디지털\n테라퓨틱스',
+              child: Text(
+                '디지털\n테라퓨틱스',
+                textAlign: TextAlign.center,
+              ),
               icon: Image.asset(
                 'navbar/therapy.png',
-                width: 25,
-                height: 25,
-                color: controller.index == 0
-                    ? const Color.fromRGBO(14, 32, 87, 1)
-                    : Colors.grey,
+                width: 24,
+                height: 24,
+                color: controller.index == 0 ? Colors.white : Colors.grey,
               ),
             ),
             Tab(
               text: '알람',
               icon: Image.asset(
                 'navbar/alarm.png',
-                width: 25,
-                height: 25,
-                color: controller.index == 1
-                    ? const Color.fromRGBO(14, 32, 87, 1)
-                    : Colors.grey,
+                width: 24,
+                height: 24,
+                color: controller.index == 1 ? Colors.white : Colors.grey,
               ),
             ),
             Tab(
               text: '내 정보',
               icon: Image.asset(
                 'navbar/user.png',
-                width: 25,
-                height: 25,
-                color: controller.index == 2
-                    ? const Color.fromRGBO(14, 32, 87, 1)
-                    : Colors.grey,
+                width: 24,
+                height: 24,
+                color: controller.index == 2 ? Colors.white : Colors.grey,
               ),
             ),
           ],

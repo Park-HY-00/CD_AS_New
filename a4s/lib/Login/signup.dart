@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a4s/MainPage/main_page.dart';
 import 'package:a4s/data/view/user_view_model.dart';
 import 'package:get/get.dart';
-import 'signup_2.dart';
 
 /// 회원가입 화면
 class SignUpPage extends ConsumerStatefulWidget {

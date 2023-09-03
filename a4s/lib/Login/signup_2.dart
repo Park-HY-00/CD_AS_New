@@ -1,3 +1,4 @@
+import 'package:a4s/Login/signup_3.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -191,10 +192,10 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                           weight: _weight.value.text,
                           //disease: _disease.dropdownvalue.value
                         );
-                        Navigator.pushAndRemoveUntil(
+                        Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MainPage()),
-                            (route) => false);
+                            MaterialPageRoute(
+                                builder: (context) => SignUpPage3()));
                       } catch (e) {
                         print("$e 이메일 회원가입 실패");
                       }

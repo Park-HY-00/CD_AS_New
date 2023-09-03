@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+class AlarmPage extends ConsumerStatefulWidget {
+  const AlarmPage({super.key});
 
   @override
-  _HomePage createState() => _HomePage();
+  _AlarmPage createState() => _AlarmPage();
 }
 
-class _HomePage extends ConsumerState<HomePage> {
-  int pageNum = 0;
+class _AlarmPage extends ConsumerState<AlarmPage> {
+  int pageNum = 1;
   void getPageNum(int index) {
     setState(() {
       pageNum = index;
