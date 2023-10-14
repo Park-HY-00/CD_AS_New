@@ -17,7 +17,7 @@ class remoteDataSource {
 ///인증에 관련된 외부데이터소스
 class AuthDataSource extends remoteDataSource {
   // ///카카오를 통한 간편로그인
-  // Future<User> kakaoSignIn() async {
+  // Future<User> GoogleSignIn() async {
   //   if (!await checkNetwork()) {
   //     throw Exception("인터넷 연결 없음");
   //   }
@@ -67,20 +67,20 @@ class AuthDataSource extends remoteDataSource {
   //   }
   //   Kakao.User user = await Kakao.UserApi.instance.me();
 
-  //   //파이어베이스에 카카오 인증 uid를 통해 계정 생성
-  //   var response =
-  //       await get(Uri.http('localhost:8000', '/', {'id': user.id.toString()}));
-  //   var responseBody = response.body;
-  //   final userCredential = await FirebaseAuth.instance
-  //       .signInWithCustomToken(responseBody.toString());
-  //   final realUser = userCredential.user;
-  //   //첫 카카오를 통한 로그인이라면 파이어베이스 계정 정보 초기화
-  //   if (realUser?.displayName == null && realUser?.photoURL == null) {
-  //     await realUser?.updateDisplayName(user.kakaoAccount!.profile!.nickname);
-  //     await realUser
-  //         ?.updatePhotoURL(user.kakaoAccount!.profile!.profileImageUrl);
-  //   }
-  //   return realUser!;
+    // //파이어베이스에 카카오 인증 uid를 통해 계정 생성
+    // var response =
+    //     await get(Uri.http('localhost:8000', '/', {'id': user.id.toString()}));
+    // var responseBody = response.body;
+    // final userCredential = await FirebaseAuth.instance
+    //     .signInWithCustomToken(responseBody.toString());
+    // final realUser = userCredential.user;
+    // //첫 카카오를 통한 로그인이라면 파이어베이스 계정 정보 초기화
+    // if (realUser?.displayName == null && realUser?.photoURL == null) {
+    //   await realUser?.updateDisplayName(user.kakaoAccount!.profile!.nickname);
+    //   await realUser
+    //       ?.updatePhotoURL(user.kakaoAccount!.profile!.profileImageUrl);
+    // }
+    // return realUser!;
   // }
 
   ///로그아웃

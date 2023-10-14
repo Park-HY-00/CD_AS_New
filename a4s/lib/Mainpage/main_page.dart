@@ -1,3 +1,5 @@
+import 'package:a4s/myPage/myPage.dart';
+import 'package:a4s/therapy/therapy.dart';
 import 'package:flutter/material.dart';
 import 'package:a4s/alarm/alarm.dart';
 import 'package:a4s/data/repository/auth_repository.dart';
@@ -19,9 +21,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
   }
 
   int _selectedIdx = 1;
-  final List _pages = [
-    const AlarmPage(),
-  ];
+  final List _pages = [const TherapyPage(), const AlarmPage(), const MyPage()];
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
       },
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60),
+          preferredSize: Size.fromHeight(70),
           child: AppBar(
             backgroundColor: const Color.fromARGB(255, 255, 255, 255),
             elevation: 0.0,
@@ -51,7 +51,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
             title: Container(
               height: 80,
               child: Image.asset(
-                "/logo.png",
+                "assets/logo.png",
                 width: 150,
                 height: double.maxFinite,
               ),
@@ -70,54 +70,57 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
             );
           }).toList(),
         ),
-        bottomNavigationBar: TabBar(
-          controller: controller,
-          indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              color: Color(0xff6694ff)),
-          indicatorSize: TabBarIndicatorSize.tab,
-          unselectedLabelColor: Colors.grey,
-          labelColor: Colors.white,
-          labelStyle:
-              const TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
-          labelPadding: EdgeInsets.symmetric(vertical: 5),
-          onTap: (index) {
-            setState(() {
-              _selectedIdx = index;
-            });
-          },
-          tabs: [
-            Tab(
-              child: Text(
-                '디지털\n테라퓨틱스',
-                textAlign: TextAlign.center,
+        bottomNavigationBar: SizedBox(
+          height: 70,
+          child: TabBar(
+            controller: controller,
+            indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                color: Color(0xff6694ff)),
+            indicatorSize: TabBarIndicatorSize.tab,
+            unselectedLabelColor: Colors.grey,
+            labelColor: Colors.white,
+            labelStyle:
+                const TextStyle(fontSize: 10, fontWeight: FontWeight.w100),
+            labelPadding: EdgeInsets.symmetric(vertical: 5),
+            onTap: (index) {
+              setState(() {
+                _selectedIdx = index;
+              });
+            },
+            tabs: [
+              Tab(
+                child: Text(
+                  '디지털',
+                  textAlign: TextAlign.center,
+                ),
+                icon: Image.asset(
+                  'assets/navbar/therapy.png',
+                  width: 24,
+                  height: 24,
+                  color: controller.index == 0 ? Colors.white : Colors.grey,
+                ),
               ),
-              icon: Image.asset(
-                'navbar/therapy.png',
-                width: 24,
-                height: 24,
-                color: controller.index == 0 ? Colors.white : Colors.grey,
+              Tab(
+                text: '알람',
+                icon: Image.asset(
+                  'assets/navbar/alarm.png',
+                  width: 24,
+                  height: 24,
+                  color: controller.index == 1 ? Colors.white : Colors.grey,
+                ),
               ),
-            ),
-            Tab(
-              text: '알람',
-              icon: Image.asset(
-                'navbar/alarm.png',
-                width: 24,
-                height: 24,
-                color: controller.index == 1 ? Colors.white : Colors.grey,
+              Tab(
+                text: '내 정보',
+                icon: Image.asset(
+                  'assets/navbar/user.png',
+                  width: 24,
+                  height: 24,
+                  color: controller.index == 2 ? Colors.white : Colors.grey,
+                ),
               ),
-            ),
-            Tab(
-              text: '내 정보',
-              icon: Image.asset(
-                'navbar/user.png',
-                width: 24,
-                height: 24,
-                color: controller.index == 2 ? Colors.white : Colors.grey,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
