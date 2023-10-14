@@ -4,6 +4,7 @@ import 'package:a4s/data/model/app_user.dart';
 import 'package:a4s/data/repository/auth_repository.dart';
 import 'package:a4s/data/repository/user_info_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 final userViewModelProvider =
     ChangeNotifierProvider<UserViewModel>((ref) => UserViewModel());
@@ -14,12 +15,12 @@ class UserViewModel extends ChangeNotifier {
   AppUser? get user => _user;
 
   bool get isAuthenticated => _user != null;
-
-  // Future<void> kakaoSignIn() {
-  //   return authRepositoryProvider.kakaoSignIn().then((result) async {
+  
+  // Future<void> GoogleSignIn() {
+  //   return authRepositoryProvider.GoogleSignIn().then((result) async {
   //     _user = result;
   //     try {
-  //       _user!.team =
+  //       _user!.gender =
   //           await userInfoRepositoryProvider.getMyTeam(uid: _user!.uid!);
   //     } catch (e) {
   //       //처음 카카오 로그인

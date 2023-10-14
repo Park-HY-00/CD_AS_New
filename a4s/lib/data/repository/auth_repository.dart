@@ -7,8 +7,8 @@ final authRepositoryProvider = AuthRepository();
 class AuthRepository {
   late final AuthDataSource _authDataSource = AuthDataSource();
 
-  // Future<AppUser> kakaoSignIn() async {
-  //   return AppUser.fromUser(await _authDataSource.kakaoSignIn());
+  // Future<AppUser> GoogleSignIn() async {
+  //   return AppUser.fromUser(await _authDataSource.GoogleSignIn());
   // }
 
   Future<void> signOut() async {
