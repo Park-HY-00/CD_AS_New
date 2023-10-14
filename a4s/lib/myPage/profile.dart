@@ -20,38 +20,53 @@ class AdaptiveTextSize {
 }
 
 class _EditState extends ConsumerState<Edit> {
-  TextStyle style = const TextStyle(fontSize: 18.0);
-  late TextEditingController _name;
-  late TextEditingController _password;
-  late TextEditingController _new_password;
-  late TextEditingController _confirm_new_password;
+  TextStyle style = TextStyle(fontFamily: 'NanumSquare', fontSize: 18.0);
   late TextEditingController _email;
+  late TextEditingController _name;
+  late TextEditingController _weight;
+  late TextEditingController _height;
+  FocusNode searchFocusNode = FocusNode();
+  FocusNode textFieldFocusNode = FocusNode();
+  late SingleValueDropDownController _cnt;
+  late SingleValueDropDownController _disease;
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
 
-  FocusNode searchFocusNode = FocusNode();
-  FocusNode textFieldFocusNode = FocusNode();
+  List<DropDownValueModel> dropDownListGender = [
+    DropDownValueModel(name: "여자", value: "여자"),
+    DropDownValueModel(name: "남자", value: "남자")
+  ];
+
+  List<DropDownValueModel> dropDownListDisease = [
+    DropDownValueModel(name: "해당 없음", value: "해당 없음"),
+    DropDownValueModel(name: "불면증", value: "불면증")
+  ];
 
   @override
   void initState() {
     super.initState();
     final readUser = ref.read(userViewModelProvider);
+    print(readUser.user!.height);
+    _email = TextEditingController(text: readUser.user!.email);
     _name = TextEditingController(text: readUser.user!.name);
-
-    _password = TextEditingController(text: "");
-    _new_password = TextEditingController(text: "");
-    _confirm_new_password = TextEditingController(text: "");
-    _email = TextEditingController(
-        text: readUser.user?.name != null ? readUser.user?.email : "");
+    _weight = TextEditingController(text: readUser.user!.weight);
+    _height = TextEditingController(text: readUser.user!.height);
+    _cnt = SingleValueDropDownController(
+      data: DropDownValueModel(name: readUser.user!.gender!, value: readUser.user!.gender!)
+    );
+    _disease = SingleValueDropDownController(
+      data: DropDownValueModel(name: readUser.user!.disease!, value: readUser.user!.disease!)
+    );
   }
 
   @override
   void dispose() {
-    _name.dispose();
     _email.dispose();
-    _password.dispose();
-    _new_password.dispose();
-    _confirm_new_password.dispose();
+    _name.dispose();
+    _weight.dispose();
+    _height.dispose();
+    _cnt.dispose();
+    _disease.dispose();
     super.dispose();
   }
 
@@ -71,10 +86,10 @@ class _EditState extends ConsumerState<Edit> {
                 child: Text('회원정보 수정',
                     style: TextStyle(
                         fontSize: const AdaptiveTextSize()
-                            .getadaptiveTextSize(context, 13),
-                        fontWeight: FontWeight.w600)),
+                            .getadaptiveTextSize(context, 18),
+                        fontWeight: FontWeight.w600,)),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 30),
               user.user!.email == null || user.user?.email == ""
                   ? const SizedBox()
                   : Padding(
@@ -88,6 +103,7 @@ class _EditState extends ConsumerState<Edit> {
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email),
                           labelText: "이메일 변경",
+                          labelStyle: TextStyle(color: Color(0xff6499ff)),
                           filled: true,
                           fillColor: const Color(0xffF6F6F6),
                           border: OutlineInputBorder(
@@ -103,11 +119,12 @@ class _EditState extends ConsumerState<Edit> {
                 child: TextFormField(
                   controller: _name,
                   validator: (value) =>
-                      (value!.isEmpty) ? "닉네임 입력 해 주세요" : null,
+                      (value!.isEmpty) ? "이름을 입력 해 주세요" : null,
                   style: style,
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.person),
-                    labelText: "닉네임 변경",
+                    labelText: "이름 변경",
+                    labelStyle: TextStyle(color: Color(0xff6499ff)),
                     filled: true,
                     fillColor: const Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -117,63 +134,144 @@ class _EditState extends ConsumerState<Edit> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),
+                child: DropDownTextField(
+                    validator: (value) =>
+                        (_cnt.dropDownValue == null) ? "성별을 선택해 주세요" : null,
+                    clearOption: false,
+                    textFieldFocusNode: textFieldFocusNode,
+                    searchFocusNode: searchFocusNode,
+                    dropDownItemCount: 2,
+                    searchShowCursor: false,
+                    searchKeyboardType: TextInputType.number,
+                    textFieldDecoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.favorite),
+                        labelText: "성별",
+                        labelStyle: TextStyle(color: Color(0xff6499ff)),
+                        filled: true,
+                        fillColor: const Color(0xffF6F6F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        )),
+                    dropDownList: dropDownListGender,
+                    controller: _cnt),
               ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),
-                child: OutlinedButton(
-                    onPressed: () {
-                      user
-                          .sendPasswordResetEmail(
-                              email: user.user!.email.toString())
-                          .then((value) =>
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('비밀번호 재설정 메일을 전송합니다')),
-                              ));
-                    },
-                    child: const Text(' 비밀번호 재설정하기')),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(40, 20, 40, 0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    user.updateUserInfo(
-                        uid: user.user!.uid!,
-                        email: _email.value.text,
-                        name: _name.value.text);
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
-                      builder: ((context) {
-                        return AlertDialog(
-                          backgroundColor: Colors.white,
-                          surfaceTintColor: Colors.white,
-                          title: const Text("회원정보 수정"),
-                          content: const Text("회원 정보가 수정되었습니다."),
-                          actions: <Widget>[
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(); //창 닫기
-                              },
-                              child: const Text("X"),
-                            )
-                          ],
-                        );
-                      }),
-                    );
-                  },
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromRGBO(33, 58, 135, 1))),
-                  child: const Text(
-                    "DONE",
-                    style: TextStyle(fontSize: 12, color: Colors.white),
+                child: TextFormField(
+                  controller: _height,
+                  validator: (value) => (value!.isEmpty) ? "키를 입력 해 주세요" : null,
+                  style: style,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.height),
+                    labelText: "키 변경",
+                    labelStyle: TextStyle(color: Color(0xff6499ff)),
+                    filled: true,
+                    fillColor: const Color(0xffF6F6F6),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
-              )
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),
+                child: TextFormField(
+                  controller: _weight,
+                  validator: (value) =>
+                      (value!.isEmpty) ? "몸무게를 입력 해 주세요" : null,
+                  style: style,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.line_weight),
+                    labelText: "몸무게 변경",
+                    labelStyle: TextStyle(color: Color(0xff6499ff)),
+                    filled: true,
+                    fillColor: const Color(0xffF6F6F6),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30),
+                child: DropDownTextField(
+                    validator: (value) => (_disease.dropDownValue == null)
+                        ? "기저질환을 선택해 주세요"
+                        : null,
+                    clearOption: false,
+                    textFieldFocusNode: textFieldFocusNode,
+                    searchFocusNode: searchFocusNode,
+                    dropDownItemCount: 2,
+                    searchShowCursor: false,
+                    searchKeyboardType: TextInputType.number,
+                    textFieldDecoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.sick),
+                        labelText: "기저질환",
+                        labelStyle: TextStyle(color: Color(0xff6499ff)),
+                        filled: true,
+                        fillColor: const Color(0xffF6F6F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        )),
+                    dropDownList: dropDownListDisease,
+                    controller: _disease),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              SizedBox(
+                child: MaterialButton(
+                    shape: CircleBorder(),
+                    color: Color(0xff6694ff),
+                    height: 80,
+                    elevation: 10.0,
+                    onPressed: () {
+                      user.updateUserInfo(
+                          uid: user.user!.uid!,
+                          email: _email.value.text,
+                          name: _name.value.text,
+                          weight: _weight.value.text,
+                          height: _height.value.text,
+                          gender: _cnt.dropDownValue!.value,
+                          disease: _disease.dropDownValue!.value
+                          );
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true, //바깥 영역 터치시 닫을지 여부 결정
+                        builder: ((context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            title: const Text("회원정보 수정"),
+                            content: const Text("회원 정보가 수정되었습니다."),
+                            actions: <Widget>[
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); //창 닫기
+                                },
+                                child: const Text("X"),
+                              )
+                            ],
+                          );
+                        }),
+                      );
+                    },
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 30,
+                    )),
+              ),
             ],
           ),
         ));

@@ -15,7 +15,7 @@ class UserViewModel extends ChangeNotifier {
   AppUser? get user => _user;
 
   bool get isAuthenticated => _user != null;
-  
+
   // Future<void> GoogleSignIn() {
   //   return authRepositoryProvider.GoogleSignIn().then((result) async {
   //     _user = result;
@@ -36,19 +36,23 @@ class UserViewModel extends ChangeNotifier {
     required String gender,
     required String height,
     required String weight,
+    required String disease,
   }) {
     return authRepositoryProvider
-        .emailSignUp(
-            email: email,
-            password: password,
-            name: name,
-            gender: gender,
-            height: height,
-            weight: weight)
+        .emailSignUp(email: email, password: password, name: name)
         .then((result) {
       _user = result;
       _user!.name = name;
-      userInfoRepositoryProvider.updateMyTeam(uid: _user!.uid!);
+      userInfoRepositoryProvider.updateMySleepInfo(
+          uid: _user!.uid!,
+          gender: gender,
+          height: height,
+          weight: weight,
+          disease: disease);
+      _user!.weight = weight;
+      _user!.height = height;
+      _user!.gender = gender;
+      _user!.disease = disease;
       notifyListeners();
     });
   }
@@ -65,9 +69,20 @@ class UserViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> updateTeam({required String team}) async {
+  Future<void> updateSleepInfo({
+    required String uid,
+    required String gender,
+    required String height,
+    required String weight,
+    required String disease,
+  }) async {
     return await userInfoRepositoryProvider
-        .updateMyTeam(uid: _user!.uid!)
+        .updateMySleepInfo(
+            uid: _user!.uid!,
+            gender: gender,
+            height: height,
+            weight: weight,
+            disease: disease)
         .then((result) {
       notifyListeners();
     });
@@ -104,14 +119,28 @@ class UserViewModel extends ChangeNotifier {
   }
 
   ///유저 정보 업데이트
-  Future<void> updateUserInfo(
-      {required String uid,
-      required String email,
-      required String name}) async {
+  Future<void> updateUserInfo({
+    required String uid,
+    required String email,
+    required String name,
+    required String gender,
+    required String height,
+    required String weight,
+    required String disease,
+  }) async {
     await authRepositoryProvider.updateUserInfo(email: email, name: name);
     _user!.email = email;
     _user!.name = name;
-    await userInfoRepositoryProvider.updateMyTeam(uid: uid);
+    await userInfoRepositoryProvider.updateMySleepInfo(
+        uid: uid,
+        gender: gender,
+        height: height,
+        weight: weight,
+        disease: disease);
+    _user!.weight = weight;
+    _user!.height = height;
+    _user!.gender = gender;
+    _user!.disease = disease;
     notifyListeners();
   }
 }

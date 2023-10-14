@@ -21,12 +21,18 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
   FocusNode searchFocusNode = FocusNode();
   FocusNode textFieldFocusNode = FocusNode();
   late SingleValueDropDownController _cnt;
+  late SingleValueDropDownController _disease;
   final _formKey = GlobalKey<FormState>();
   final _key = GlobalKey<ScaffoldState>();
 
-  List<DropDownValueModel> dropDownValueList = [
+  List<DropDownValueModel> dropDownListGender = [
     DropDownValueModel(name: "여자", value: "여자"),
     DropDownValueModel(name: "남자", value: "남자")
+  ];
+
+  List<DropDownValueModel> dropDownListDisease = [
+    DropDownValueModel(name: "해당 없음", value: "해당 없음"),
+    DropDownValueModel(name: "불면증", value: "불면증")
   ];
 
   @override
@@ -37,6 +43,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
     _weight = TextEditingController(text: "");
     _height = TextEditingController(text: "");
     _cnt = SingleValueDropDownController();
+    _disease = SingleValueDropDownController();
   }
 
   @override
@@ -46,6 +53,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
     _weight.dispose();
     _height.dispose();
     _cnt.dispose();
+    _disease.dispose();
     super.dispose();
   }
 
@@ -101,6 +109,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.person),
                     labelText: "이름",
+                    labelStyle: TextStyle(
+                          color: Color(0xff6499ff)
+                        ),
                     filled: true,
                     fillColor: Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -125,13 +136,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                     textFieldDecoration: InputDecoration(
                         prefixIcon: const Icon(Icons.favorite),
                         labelText: "성별",
+                        labelStyle: TextStyle(
+                          color: Color(0xff6499ff)
+                        ),
                         filled: true,
                         fillColor: const Color(0xffF6F6F6),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
                         )),
-                    dropDownList: dropDownValueList,
+                    dropDownList: dropDownListGender,
                     controller: _cnt),
               ),
               Padding(
@@ -144,6 +158,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.height),
                     labelText: "키",
+                    labelStyle: TextStyle(
+                          color: Color(0xff6499ff)
+                        ),
                     filled: true,
                     fillColor: Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -164,6 +181,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(Icons.line_weight),
                     labelText: "몸무게",
+                    labelStyle: TextStyle(
+                          color: Color(0xff6499ff)
+                        ),
                     filled: true,
                     fillColor: Color(0xffF6F6F6),
                     border: OutlineInputBorder(
@@ -172,6 +192,34 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                     ),
                   ),
                 ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+                child: DropDownTextField(
+                    validator: (value) => (_disease.dropDownValue == null)
+                        ? "기저질환을 선택해 주세요"
+                        : null,
+                    clearOption: false,
+                    textFieldFocusNode: textFieldFocusNode,
+                    searchFocusNode: searchFocusNode,
+                    dropDownItemCount: 2,
+                    searchShowCursor: false,
+                    searchKeyboardType: TextInputType.number,
+                    textFieldDecoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.sick),
+                        labelText: "기저질환",
+                        labelStyle: TextStyle(
+                          color: Color(0xff6499ff)
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xffF6F6F6),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none,
+                        )),
+                    dropDownList: dropDownListDisease,
+                    controller: _disease),
               ),
               SizedBox(height: 40),
               SizedBox(
@@ -184,14 +232,13 @@ class _SignUpPageState extends ConsumerState<SignUpPage2> {
                     if (_formKey.currentState!.validate()) {
                       try {
                         await user.emailSignUp(
-                          email: "${Get.arguments['email']}",
-                          password: "${Get.arguments['password']}",
-                          name: "${Get.arguments['name']}",
-                          gender: _cnt.dropDownValue!.value,
-                          height: _height.value.text,
-                          weight: _weight.value.text,
-                          //disease: _disease.dropdownvalue.value
-                        );
+                            email: "${Get.arguments['email']}",
+                            password: "${Get.arguments['password']}",
+                            name: "${Get.arguments['name']}",
+                            gender: _cnt.dropDownValue!.value,
+                            height: _height.value.text,
+                            weight: _weight.value.text,
+                            disease: _disease.dropDownValue!.value);
                         Navigator.push(
                             context,
                             MaterialPageRoute(
