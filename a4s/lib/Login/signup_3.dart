@@ -146,7 +146,37 @@ class _SignUpPageState extends ConsumerState<SignUpPage3> {
                 height: 80,
                 elevation: 10.0,
                 onPressed: () async {
-                  PermissionManage();
+                  Future<bool> requestPermission(BuildContext context) async {
+                    // 권한 요청
+                    Map<Permission, PermissionStatus> permissions = await [
+                      Permission.microphone,
+                      Permission.sensors
+                    ].request();
+                    print('per1 : $permissions');
+                    // 결과 확인
+                    if (!permissions.values
+                        .every((element) => element.isGranted)) {
+                      // 허용이 안된 경우
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // 권한없음을 다이얼로그로 알림
+                            return AlertDialog(
+                              content: const Text("권한 설정을 확인해주세요."),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      openAppSettings(); // 앱 설정으로 이동
+                                    },
+                                    child: const Text('설정하기')),
+                              ],
+                            );
+                          });
+                      return false;
+                    }
+                    return true;
+                  }
+
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SignUpPage4()));
                 },
@@ -164,31 +194,6 @@ class _SignUpPageState extends ConsumerState<SignUpPage3> {
   }
 }
 
-class PermissionManage{
+class PermissionManage {
   /// 센서, 녹음 권한 요청
-  Future<bool> requestPermission(BuildContext context) async {
-    // 권한 요청
-    Map<Permission, PermissionStatus> permissions = await [Permission.microphone, Permission.sensors].request();
-    print('per1 : $permissions');
-    // 결과 확인
-    if(!permissions.values.every((element) => element.isGranted)) { // 허용이 안된 경우
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // 권한없음을 다이얼로그로 알림
-            return AlertDialog(
-              content: const Text("권한 설정을 확인해주세요."),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      openAppSettings(); // 앱 설정으로 이동
-                    },
-                    child: const Text('설정하기')),
-              ],
-            );
-          });
-      return false;
-    }
-    return true;
-  }
 }

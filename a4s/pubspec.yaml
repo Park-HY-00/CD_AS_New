@@ -43,6 +43,9 @@ dependencies:
   cloud_firestore: ^4.8.4
   http: ^1.1.0
   connectivity_plus: ^4.0.2
+  health: ^8.0.0
+  permission_handler: ^10.4.3
+  google_sign_in: ^6.1.5
 
 dev_dependencies:
   flutter_test:
@@ -71,8 +74,8 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-  - assets/
-  - assets/navbar
+    - assets/
+    - assets/navbar/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

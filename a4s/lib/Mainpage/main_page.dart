@@ -1,17 +1,21 @@
-import 'package:a4s/myPage/myPage.dart';
+import 'package:a4s/myPage/profile.dart';
+import 'package:a4s/sleepInfo/sleepInfo.dart';
 import 'package:a4s/therapy/therapy.dart';
 import 'package:flutter/material.dart';
 import 'package:a4s/alarm/alarm.dart';
 import 'package:a4s/data/repository/auth_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a4s/data/view/user_view_model.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _Root();
+  ConsumerState<MainPage> createState() => _Root();
 }
 
-class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
+class _Root extends ConsumerState<MainPage>
+    with SingleTickerProviderStateMixin {
   late final TabController controller;
   late List<GlobalKey<NavigatorState>> _navigatorKeyList;
 
@@ -21,7 +25,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
   }
 
   int _selectedIdx = 1;
-  final List _pages = [const TherapyPage(), const AlarmPage(), const MyPage()];
+  final List _pages = [const TherapyPage(), const AlarmPage(), const SleepInfo()];
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userViewModelProvider);
     Size size = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
@@ -58,6 +63,51 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
             ),
           ),
         ),
+        endDrawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              Container(
+                height: 250,
+                child: UserAccountsDrawerHeader(
+                  currentAccountPicture: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage(user.user!.gender == '여자'
+                        ? 'assets/women.png'
+                        : 'assets/man.png'),
+                  ),
+                  accountName: Text(
+                    user.user!.name!,
+                    style: TextStyle(
+                        fontSize: const AdaptiveTextSize()
+                            .getadaptiveTextSize(context, 18),
+                        fontWeight: FontWeight.w600),
+                  ),
+                  accountEmail: Text(user.user!.email!),
+                  decoration: BoxDecoration(
+                    color: Color(0xff6694ff),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.settings,
+                  color: Colors.grey[850],
+                ),
+                title: Text("내 프로필 수정"),
+                onTap: () {
+                  Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Edit()));
+                      // 회원정보 수정 페이지로 이동
+                },
+                trailing: Icon(
+                  Icons.add,
+                  color: Colors.grey[850],
+                ),
+              )
+            ],
+          ),
+        ),
         body: IndexedStack(
           index: _selectedIdx,
           children: _pages.map((page) {
@@ -71,7 +121,7 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
           }).toList(),
         ),
         bottomNavigationBar: SizedBox(
-          height: 70,
+          height: 60,
           child: TabBar(
             controller: controller,
             indicator: BoxDecoration(
@@ -90,10 +140,6 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
             },
             tabs: [
               Tab(
-                child: Text(
-                  '디지털',
-                  textAlign: TextAlign.center,
-                ),
                 icon: Image.asset(
                   'assets/navbar/therapy.png',
                   width: 24,
@@ -102,7 +148,6 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
                 ),
               ),
               Tab(
-                text: '알람',
                 icon: Image.asset(
                   'assets/navbar/alarm.png',
                   width: 24,
@@ -111,9 +156,8 @@ class _Root extends State<MainPage> with SingleTickerProviderStateMixin {
                 ),
               ),
               Tab(
-                text: '내 정보',
                 icon: Image.asset(
-                  'assets/navbar/user.png',
+                  'assets/navbar/sleep.png',
                   width: 24,
                   height: 24,
                   color: controller.index == 2 ? Colors.white : Colors.grey,
