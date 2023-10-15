@@ -2,6 +2,7 @@ import 'package:a4s/data/view/user_view_model.dart';
 import 'package:a4s/myPage/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class SleepInfo extends ConsumerStatefulWidget {
   const SleepInfo({super.key});
@@ -31,200 +32,88 @@ class _SleepInfo extends ConsumerState<SleepInfo> {
           children: [
             Container(
               alignment: Alignment.center,
-              child: const Profile(),
-            ),
-            Container(
-              child: const MyPageList(),
+              child: Calendar(),
             )
           ],
         ));
   }
 }
 
-class Profile extends ConsumerStatefulWidget {
-  const Profile({super.key});
-
-  @override
-  _ProfileState createState() => _ProfileState();
-}
-
-class _ProfileState extends ConsumerState {
+class Calendar extends StatelessWidget {
+  Calendar({super.key});
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userViewModelProvider);
-    var size = MediaQuery.of(context).size;
-
-    return Container(
-      margin: EdgeInsets.fromLTRB(size.width * 0.05, size.height * 0.02,
-          size.width * 0.05, size.height * 0.02),
-      padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-      decoration: BoxDecoration(
-          border: Border.all(width: 2, color: Color(0xff6694ff)),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/logo.png",
-                    width: 100,
-                  ),
-                  SizedBox(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user.user!.name!,
-                          style: TextStyle(
-                              fontSize: const AdaptiveTextSize()
-                                  .getadaptiveTextSize(context, 13),
-                              color: const Color.fromRGBO(18, 32, 84, 1),
-                              fontWeight: FontWeight.w700),
-                        ),
-                        Container(height: 10),
-                        user.user!.email != null
-                            ? Text(
-                                user.user!.email!,
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: const AdaptiveTextSize()
-                                        .getadaptiveTextSize(context, 12)),
-                              )
-                            : const SizedBox(),
-                      ],
-                    ),
-                  )
-                ]),
+    return TableCalendar(
+      locale: 'en_US',
+      events: _selectedDay,
+      initialCalendarFormat: CalendarFormat.month,
+      formatAnimation: FormatAnimation.slide,
+      startingDayOfWeek: StartingDayOfWeek.sunday,
+      availableGestures: AvailableGestures.none,
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Month',
+      },
+      calendarStyle: CalendarStyle(
+        weekdayStyle: TextStyle(color: Colors.white),
+        weekendStyle: TextStyle(color: Colors.white),
+        outsideStyle: TextStyle(color: Colors.grey),
+        unavailableStyle: TextStyle(color: Colors.grey),
+        outsideWeekendStyle: TextStyle(color: Colors.grey),
+      ),
+      daysOfWeekStyle: DaysOfWeekStyle(
+        dowTextBuilder: (date, locale) {
+          return DateFormat.E(locale)
+              .format(date)
+              .substring(0, 3)
+              .toUpperCase();
+        },
+        weekdayStyle: TextStyle(color: Colors.grey),
+        weekendStyle: TextStyle(color: Colors.grey),
+      ),
+      headerVisible: false,
+      builders: CalendarBuilders(
+        markersBuilder: (context, date, events, holidays) {
+          return [
             Container(
-              margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.edit,
-                    size: 17.0,
-                  ),
-                  Container(
-                    width: 5,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Edit()));
-                      // 회원정보 수정 페이지로 이동
-                    },
-                    child: Text(
-                      "내 정보 수정하기",
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w500,
-                          fontSize: const AdaptiveTextSize()
-                              .getadaptiveTextSize(context, 10),
-                          color: Colors.grey),
-                    ),
-                  )
-                ],
+              decoration: new BoxDecoration(
+                color: Color(0xFF30A9B2),
+                shape: BoxShape.circle,
               ),
+              margin: const EdgeInsets.all(4.0),
+              width: 4,
+              height: 4,
             )
-          ]),
+          ];
+        },
+        selectedDayBuilder: (context, date, _) {
+          return Container(
+            decoration: new BoxDecoration(
+              color: Color(0xFF30A9B2),
+              shape: BoxShape.circle,
+            ),
+            margin: const EdgeInsets.all(4.0),
+            width: 100,
+            height: 100,
+            child: Center(
+              child: Text(
+                '${date.day}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        },
+      ), firstDay: null, focusedDay: null, lastDay: null,
     );
   }
-}
 
-class MyPageList extends StatelessWidget {
-  const MyPageList({super.key});
-
-  void onPressed() {}
-
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var wSize = size.width * (2 / 6) + 20;
-    return (Container(
-      margin: EdgeInsets.fromLTRB(size.width * 0.05, size.height * 0.02,
-          size.width * 0.05, size.height * 0.02),
-      child: (Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            // padding: const EdgeInsets.all(8),
-            width: wSize,
-            height: size.height * 0.13,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: Color(0xff6694ff),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-            child: InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const MyTeam()),
-                // );
-                // 내 응원팀 경기일정 보기로 이동
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "내 수면 정보",
-                    style: TextStyle(
-                        fontSize: const AdaptiveTextSize()
-                            .getadaptiveTextSize(context, 11),
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const Icon(Icons.event_available,
-                      color: Color.fromRGBO(18, 32, 84, 1))
-                ],
-              ),
-            ),
-          ),
-          Container(
-            // padding: const EdgeInsets.all(8),
-            width: wSize,
-            height: size.height * 0.13,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: Color(0xff6694ff),
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-            child: InkWell(
-              onTap: () {
-                // 내 여행 일정 페이지로 이동
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const MyTravel()),
-                // );
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "수면 중 소음",
-                    style: TextStyle(
-                        fontSize: const AdaptiveTextSize()
-                            .getadaptiveTextSize(context, 11),
-                        fontWeight: FontWeight.w600),
-                  ),
-                  const Icon(Icons.card_travel,
-                      color: Color.fromRGBO(18, 32, 84, 1))
-                ],
-              ),
-            ),
-          )
-        ],
-      )),
-    ));
-  }
+  final Map<DateTime, List> _selectedDay = {
+    DateTime(2019, 4, 3): ['Selected Day in the calendar!'],
+    DateTime(2019, 4, 5): ['Selected Day in the calendar!'],
+    DateTime(2019, 4, 22): ['Selected Day in the calendar!'],
+    DateTime(2019, 4, 24): ['Selected Day in the calendar!'],
+    DateTime(2019, 4, 26): ['Selected Day in the calendar!'],
+  };
 }
